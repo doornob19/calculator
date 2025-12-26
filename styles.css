@@ -39,9 +39,13 @@ body {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
-    flex-wrap: wrap;
+
     font-size: 24px;
     font-weight: bold;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 #buttons {
