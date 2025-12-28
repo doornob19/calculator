@@ -70,6 +70,11 @@ function onClick(e) {
     
     // When C is pressed
     if (btn.id === "clear") {
+        if (isComputedResult) {
+            display.textContent = "0";
+            resetState();
+            return;
+        }
         backspaceDisplay();
         return;
     }
