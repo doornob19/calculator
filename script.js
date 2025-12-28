@@ -149,6 +149,8 @@ function handleDot() {
 }
 
 function handleKeydown(e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+
     const key = e.key;
     const handled = (key >= "0" && key <= "9") ||
     [".", "+", "-", "*", "/", "%", "Enter", "=", "Backspace", "Escape"].includes(key);
