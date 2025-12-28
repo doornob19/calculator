@@ -25,6 +25,9 @@ buttons.forEach((button) => {
     });
 });
 
+// Keyboard support
+document.addEventListener("keydown", handleKeydown);
+
 //---------------------------- Calculator logic ----------------------------
 function onClick(e) {
     const btn = e.currentTarget;
@@ -133,6 +136,42 @@ function handleDot() {
     }
 }
 
+function handleKeydown(e) {
+    const key = e.key;
+    const handled = (key >= "0" && key <= "9") ||
+    [".", "+", "-", "*", "/", "%", "Enter", "=", "Backspace", "Escape"].includes(key);
+
+    if (!handled) return; // user presses unhandled key
+
+    e.preventDefault();
+
+    // Map key pressed to click event
+    if (key >= "0" && key <= "9") {
+        pressButton(document.querySelector(`[data-num="${key}"]`));
+        return;
+    }
+    if (key === ".") {
+        pressButton(document.querySelector("#dot"));
+        return;
+    }
+    if (key === "+" || key === "-" || key ==="*" || key === "/" || key === "%") {
+        pressButton(document.querySelector(`[data-op="${key}"]`));
+        return;
+    }
+    if (key === "=" || key === "Enter") {
+        pressButton(document.querySelector("#equal"));
+        return;
+    }
+    if (key === "Backspace") {
+        pressButton(document.querySelector("#clear"));
+        return;
+    }
+    if (key === "Escape") {
+        pressButton(document.querySelector("#all-clear"));
+        return;
+    }
+}
+
 function operate(num1, op, num2) {
     if (op === '+') return num1 + num2;
     if (op === '-') return num1 - num2;
@@ -160,4 +199,8 @@ function resetState() {
 function backspaceDisplay() {
     display.textContent = display.textContent.slice(0, -1);
     if (display.textContent === "") display.textContent = "0";
+}
+
+function pressButton(btn) {
+    btn.click();
 }
