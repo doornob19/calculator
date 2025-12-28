@@ -65,10 +65,17 @@ function onClick(e) {
         return;
     }
 
+    if (btn.id === "dot") {
+        handleDot();
+        return;
+    }
+
     if (btn.classList.contains("operator")) {
         handleOperator(btn.dataset.op);
     }
 }
+
+//---------------------------- Helper functions ----------------------------
 
 function handleOperator(op) {
     const currentNumber = Number(display.textContent);
@@ -113,7 +120,19 @@ function handleOperator(op) {
     shouldReset = true;
 }
 
-//---------------------------- Helper functions ----------------------------
+function handleDot() {
+    // Handle clicking dot right after an operator
+    if (shouldReset) {
+        display.textContent = "0";
+        shouldReset = false;
+    }
+
+    // only 1 dot allowed
+    if (!display.textContent.includes(".")) {
+        display.textContent += ".";
+    }
+}
+
 function operate(num1, op, num2) {
     if (op === '+') return num1 + num2;
     if (op === '-') return num1 - num2;
