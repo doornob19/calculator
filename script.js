@@ -2,6 +2,7 @@ let firstOperand = null;
 let operator = null;
 let shouldReset = true; // Should the next number clicked reset display
 let isError = false;
+let isComputedResult = false; // Prevent backspace on computed result
 
 const display = document.querySelector("#display");
 const buttons = document.querySelectorAll("button");
@@ -32,6 +33,7 @@ document.addEventListener("keydown", handleKeydown);
 function onClick(e) {
     const btn = e.currentTarget;
 
+    // When display is Error, AC, C and clicking a number resets the state, other buttons don't do anything
     if (isError) {
         if (btn.id === "all-clear" || btn.id === "clear") {
             display.textContent = "0";
@@ -48,31 +50,37 @@ function onClick(e) {
         return;
     }
 
+    // When number is pressed
     if (btn.classList.contains("number")) {
-        if (shouldReset) {
-            display.textContent = "";
+        if (shouldReset || isComputedResult) {
+            display.textContent = ""; // allow clicking of another number to overwrite the display
             shouldReset = false;
+            isComputedResult = false;
         }
         display.textContent += btn.textContent;
         return;
     }
 
+    // When AC is pressed
     if (btn.id === "all-clear") {
         display.textContent = "0";
         resetState();
         return;
     }
     
+    // When C is pressed
     if (btn.id === "clear") {
         backspaceDisplay();
         return;
     }
 
+    // When . is pressed
     if (btn.id === "dot") {
         handleDot();
         return;
     }
 
+    // When +-*/% is pressed
     if (btn.classList.contains("operator")) {
         handleOperator(btn.dataset.op);
     }
@@ -92,13 +100,14 @@ function handleOperator(op) {
             return;
         }
         display.textContent = String(result);
+        isComputedResult = true;
         firstOperand = null;
         operator = null
         shouldReset = true;
         return;
     }
 
-    // normal operator pressed but theres only 1 number
+    // First operand does not exist
     if (firstOperand === null) {
         firstOperand = currentNumber;
         operator = op;
@@ -112,6 +121,7 @@ function handleOperator(op) {
         return;
     }
 
+    // Chaining operators
     const result = operate(firstOperand, operator, currentNumber);
     if (result === "Error") {
         setError();
@@ -120,6 +130,7 @@ function handleOperator(op) {
     operator = op;
     firstOperand = result;
     display.textContent = String(result);
+    isComputedResult = true;
     shouldReset = true;
 }
 
@@ -128,6 +139,7 @@ function handleDot() {
     if (shouldReset) {
         display.textContent = "0";
         shouldReset = false;
+        isComputedResult = false;
     }
 
     // only 1 dot allowed
@@ -187,6 +199,7 @@ function setError() {
     operator = null;
     shouldReset = true;
     isError = true;
+    isComputedResult = false;
 }
 
 function resetState() {
@@ -194,9 +207,11 @@ function resetState() {
     operator = null;
     shouldReset = true;
     isError = false;
+    isComputedResult = false;
 }
 
 function backspaceDisplay() {
+    if (isComputedResult) return; // prevent backspacking computed result
     display.textContent = display.textContent.slice(0, -1);
     if (display.textContent === "") display.textContent = "0";
 }
