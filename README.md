@@ -3,7 +3,7 @@
 A simple calculator web app built with HTML/CSS/JavaScript.
 
 ## Live Demo
-https://doornob19.github.io/calculator/
+https://levine06.github.io/calculator/
 
 ## Features
 - Basic arithmetic operations
